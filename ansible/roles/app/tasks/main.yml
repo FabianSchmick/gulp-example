@@ -1,0 +1,18 @@
+---
+# application tasks to be customized and to run after the main provision
+- name: Setup watcher nfs cache clearing
+  sudo: yes
+  shell: watch -n16 "sysctl -w vm.drop_caches=3" > /dev/null &
+  when: inventory_hostname == "192.168.56.128"
+
+- name: Create tmpfs
+  sudo: yes
+  mount: name=/vagrant/app/cache src=none fstype=tmpfs opts="size=256m" state=mounted
+
+- name: Install node packages
+  sudo: yes
+  shell: cd /vagrant && npm install --no-bin-links
+
+- name: Execute gulp tasks
+  sudo: yes
+  shell: cd /vagrant && gulp default
