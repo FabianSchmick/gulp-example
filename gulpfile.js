@@ -15,53 +15,21 @@ var gulp  = require('gulp'),
     rs = require('run-sequence');
 
 /* Config */
-var assetsPath = './web/assets',    // path of your assets
-    bsProxy = '127.0.0.1',          // ip or domain for browsersync to find your project
-    watchHtml = './web/*.php';      // watch additional files for changes
-
-var copy = {
-    fonts: {
-        src: [
-            './node_modules/font-awesome/fonts/*'
-        ],
-        dest: assetsPath + '/min/fonts/'
-    }
-};
-
-var stylesConf = {
-    frontend: {
-        src: [
-            './node_modules/font-awesome/css/font-awesome.min.css',
-            './node_modules/bootstrap/dist/css/bootstrap.min.css',
-            assetsPath + '/sass/default.sass'
-        ],
-        concatName: 'min/css/main.css'
-    }
-};
-
-var scriptsConf = {
-    frontend: {
-        src: [
-            './node_modules/jquery/dist/jquery.min.js',
-            './node_modules/bootstrap/dist/js/bootstrap.min.js',
-            assetsPath + '/js/default.js'
-        ],
-        concatName: 'min/js/main.js'
-    }
-};
+var config = require('./config.json'),
+    assetsPath = config.assetsPath;
 
 /* Tasks */
 gulp.task('fonts', function () {
-    gulp.src(copy.fonts.src)
-        .pipe(gulp.dest(copy.fonts.dest));
+    gulp.src(config.copy.fonts.src)
+        .pipe(gulp.dest(assetsPath + '/' + config.copy.fonts.dest));
 });
 
 gulp.task('styles', function () {
-    return styles(stylesConf.frontend);
+    return styles(config.styles.frontend);
 });
 
 gulp.task('scripts', function() {
-    return scripts(scriptsConf.frontend)
+    return scripts(config.scripts.frontend);
 });
 
 gulp.task('clean', function () {
@@ -70,7 +38,7 @@ gulp.task('clean', function () {
 
 gulp.task('watch', function() {
     bs.init({
-        proxy: bsProxy
+        proxy: config.bsProxy
     });
 
     gulp.watch(assetsPath + '/sass/**', function () {
@@ -91,8 +59,8 @@ gulp.task('watch', function() {
     })
     .on('change', bs.reload);
 
-    if (watchHtml) {
-        gulp.watch(watchHtml).on('change', bs.reload);
+    if (config.watchHtml) {
+        gulp.watch(config.watchHtml).on('change', bs.reload);
     }
 });
 
@@ -109,11 +77,11 @@ gulp.task('default',
 
 /* Deployment tasks */
 gulp.task('deployStyles', function () {
-    return deployStyles(stylesConf.frontend);
+    return deployStyles(config.styles.frontend);
 });
 
 gulp.task('deployScripts', function() {
-    return deployScripts(scriptsConf.frontend)
+    return deployScripts(config.scripts.frontend)
 });
 
 gulp.task('compress', function() {
@@ -148,7 +116,7 @@ function styles(conf) {
         .pipe(sourcemaps.init())
         .pipe(sass())
     )
-    .pipe(concat(conf.concatName))
+    .pipe(concat(conf.dest))
     .pipe(rev())
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(assetsPath))
@@ -163,7 +131,7 @@ function scripts(conf) {
         this.emit('end');
     }))
     .pipe(sourcemaps.init())
-    .pipe(concat(conf.concatName))
+    .pipe(concat(conf.dest))
     .pipe(rev())
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(assetsPath))
@@ -181,7 +149,7 @@ function deployStyles(conf) {
         .pipe(sass())
         .pipe(autoprefixer())
     )
-    .pipe(concat(conf.concatName))
+    .pipe(concat(conf.dest))
     .pipe(uglifycss())
     .pipe(rev())
     .pipe(gulp.dest(assetsPath))
@@ -195,7 +163,7 @@ function deployScripts(conf) {
         console.log(error.toString());
         this.emit('end');
     }))
-    .pipe(concat(conf.concatName))
+    .pipe(concat(conf.dest))
     .pipe(uglify())
     .pipe(rev())
     .pipe(gulp.dest(assetsPath))
