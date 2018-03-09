@@ -28,9 +28,7 @@ After you cloned you need to [setup vagrant](https://github.com/FabianSchmick/va
 Configure your npm packages and gulpfile to your preferences
 
 ### While you develop
- 
-SSH into your vagrant machine (``vagrant ssh``) and navigate to the project root ``cd /vagrant``. Here you can run the gulp watch task ``gulp watch`` 
-which will compile and concat your assets and refresh your browser (open ``192.168.56.128:3000``).
+Use the gulp watch task ``gulp watch`` to compile and concat your assets or use ``gulp bs:watch`` if you want to refresh your browser automatically on change (open ``localhost:3000``).
 
 ### In production
 Run ``gulp deploy`` to minify, prefix and gzip your assets

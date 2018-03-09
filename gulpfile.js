@@ -31,32 +31,39 @@ gulp.task('scripts', function() {
     return scripts(config.scripts.frontend);
 });
 
-gulp.task('clean', function () {
-    return del(['rev-manifest.json', assetsPath + '/min/css/*', assetsPath + '/min/js/*']);
+gulp.task('clean:styles', function () {
+    return del([assetsPath + '/min/css/*']);
 });
 
+gulp.task('clean:scripts', function () {
+    return del([assetsPath + '/min/js/*']);
+});
+
+gulp.task('clean', gulp.series(
+    'clean:styles',
+    'clean:scripts'
+));
+
 gulp.task('watch', function() {
+    gulp.watch(assetsPath + '/sass/**',
+        gulp.series('clean:styles', 'styles'));
+
+    gulp.watch(assetsPath + '/js/**',
+        gulp.series('clean:scripts', 'scripts'));
+});
+
+gulp.task('bs:watch', function() {
     bs.init({
         proxy: config.bsProxy
     });
 
     gulp.watch(assetsPath + '/sass/**',
-        gulp.series(
-            'clean',
-            'scripts',
-            'styles'
-        )
-    )
-    .on('change', bs.reload);
+        gulp.series('clean:styles', 'styles'))
+        .on('change', bs.reload);
 
     gulp.watch(assetsPath + '/js/**',
-        gulp.series(
-            'clean',
-            'scripts',
-            'styles'
-        )
-    )
-    .on('change', bs.reload);
+        gulp.series('clean:scripts', 'scripts'))
+        .on('change', bs.reload);
 
     if (config.watchHtml) {
         gulp.watch(config.watchHtml).on('change', bs.reload);
