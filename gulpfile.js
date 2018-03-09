@@ -80,11 +80,11 @@ gulp.task('default',
 );
 
 /* Deployment tasks */
-gulp.task('deployStyles', function () {
+gulp.task('deploy:styles', function () {
     return deployStyles(config.styles.frontend);
 });
 
-gulp.task('deployScripts', function() {
+gulp.task('deploy:scripts', function() {
     return deployScripts(config.scripts.frontend)
 });
 
@@ -103,8 +103,8 @@ gulp.task('deploy',
     gulp.series(
         'clean',
         'fonts',
-        'deployScripts',
-        'deployStyles',
+        'deploy:scripts',
+        'deploy:styles',
         'compress'
     )
 );
