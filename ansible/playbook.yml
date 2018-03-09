@@ -5,9 +5,6 @@
     - init
     - php7.1-fpm
     - apache-fpm
-    - mysql
-    - composer
     - dotfiles
     - nodejs
     - app
-

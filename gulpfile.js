@@ -11,8 +11,7 @@ var gulp  = require('gulp'),
     plumber = require('gulp-plumber'),
     rev = require('gulp-rev'),
     del = require('del'),
-    es = require('event-stream'),
-    rs = require('run-sequence');
+    ms = require('merge-stream');
 
 /* Config */
 var config = require('./config.json'),
@@ -20,7 +19,7 @@ var config = require('./config.json'),
 
 /* Tasks */
 gulp.task('fonts', function () {
-    gulp.src(config.copy.fonts.src)
+    return gulp.src(config.copy.fonts.src)
         .pipe(gulp.dest(assetsPath + '/' + config.copy.fonts.dest));
 });
 
@@ -33,7 +32,7 @@ gulp.task('scripts', function() {
 });
 
 gulp.task('clean', function () {
-    return del.sync(['rev-manifest.json', assetsPath + '/min/css/*', assetsPath + '/min/js/*']);
+    return del(['rev-manifest.json', assetsPath + '/min/css/*', assetsPath + '/min/js/*']);
 });
 
 gulp.task('watch', function() {
@@ -41,22 +40,22 @@ gulp.task('watch', function() {
         proxy: config.bsProxy
     });
 
-    gulp.watch(assetsPath + '/sass/**', function () {
-        rs(
+    gulp.watch(assetsPath + '/sass/**',
+        gulp.series(
             'clean',
-            'styles',
-            'scripts'
+            'scripts',
+            'styles'
         )
-    })
+    )
     .on('change', bs.reload);
 
-    gulp.watch(assetsPath + '/js/**', function () {
-        rs(
+    gulp.watch(assetsPath + '/js/**',
+        gulp.series(
             'clean',
-            'styles',
-            'scripts'
+            'scripts',
+            'styles'
         )
-    })
+    )
     .on('change', bs.reload);
 
     if (config.watchHtml) {
@@ -65,14 +64,12 @@ gulp.task('watch', function() {
 });
 
 gulp.task('default',
-    function () {
-        rs(
-            'clean',
-            'fonts',
-            'styles',
-            'scripts'
-        )
-    }
+    gulp.series(
+        'clean',
+        'fonts',
+        'scripts',
+        'styles'
+    )
 );
 
 /* Deployment tasks */
@@ -85,37 +82,35 @@ gulp.task('deployScripts', function() {
 });
 
 gulp.task('compress', function() {
-    gulp.src(assetsPath + '/min/js/*.js')
-        .pipe(gzip())
-        .pipe(gulp.dest(assetsPath + '/min/js'));
-    gulp.src(assetsPath + '/min/css/*.css')
-        .pipe(gzip())
-        .pipe(gulp.dest(assetsPath + '/min/css'));
+    return ms([
+        gulp.src(assetsPath + '/min/js/*.js')
+            .pipe(gzip())
+            .pipe(gulp.dest(assetsPath + '/min/js')),
+        gulp.src(assetsPath + '/min/css/*.css')
+            .pipe(gzip())
+            .pipe(gulp.dest(assetsPath + '/min/css'))
+    ]);
 });
 
 gulp.task('deploy',
-    function () {
-        rs(
-            'clean',
-            'fonts',
-            'deployStyles',
-            'deployScripts',
-            'compress'
-        );
-    }
+    gulp.series(
+        'clean',
+        'fonts',
+        'deployScripts',
+        'deployStyles',
+        'compress'
+    )
 );
 
 /* Functions for styles and scripts */
 function styles(conf) {
-    return es.concat(
-        gulp.src(conf.src)
-        .pipe(plumber(function (error) {
-            console.log(error.toString());
-            this.emit('end');
-        }))
-        .pipe(sourcemaps.init())
-        .pipe(sass())
-    )
+    return gulp.src(conf.src)
+    .pipe(plumber(function (error) {
+        console.log(error.toString());
+        this.emit('end');
+    }))
+    .pipe(sourcemaps.init())
+    .pipe(sass())
     .pipe(concat(conf.dest))
     .pipe(rev())
     .pipe(sourcemaps.write('.'))
@@ -140,15 +135,13 @@ function scripts(conf) {
 }
 
 function deployStyles(conf) {
-    return es.concat(
-        gulp.src(conf.src)
-        .pipe(plumber(function (error) {
-            console.log(error.toString());
-            this.emit('end');
-        }))
-        .pipe(sass())
-        .pipe(autoprefixer())
-    )
+    return gulp.src(conf.src)
+    .pipe(plumber(function (error) {
+        console.log(error.toString());
+        this.emit('end');
+    }))
+    .pipe(sass())
+    .pipe(autoprefixer())
     .pipe(concat(conf.dest))
     .pipe(uglifycss())
     .pipe(rev())

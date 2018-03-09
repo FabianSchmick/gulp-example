@@ -1,6 +1,6 @@
 {
   "assetsPath": "./web/assets",
-  "bsProxy": "127.0.0.1",
+  "bsProxy": "192.168.56.128",
   "watchHtml": "./web/*.php",
 
   "copy": {
