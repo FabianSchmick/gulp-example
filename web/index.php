@@ -10,11 +10,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title></title>
-    <link rel="stylesheet" type="text/css" href="/assets/<?php echo $assets['min/css/main.css'] ?>"/>
+    <link rel="stylesheet" type="text/css" href="/<?php echo $assets['assets/build/css/main.css'] ?>"/>
 </head>
 <body>
     <h1>Gulp example</h1>
 
-    <script type="text/javascript" src="/assets/<?php echo $assets['min/js/main.js'] ?>"></script>
+    <script type="text/javascript" src="/<?php echo $assets['assets/build/js/main.js'] ?>"></script>
 </body>
 </html>

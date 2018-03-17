@@ -19,8 +19,8 @@ var config = require('./config.json'),
 
 /* Tasks */
 gulp.task('fonts', function () {
-    return gulp.src(config.copy.fonts.src)
-        .pipe(gulp.dest(assetsPath + '/' + config.copy.fonts.dest));
+    return gulp.src(config.fonts.src)
+        .pipe(gulp.dest(config.publicPath + '/' + config.fonts.dest));
 });
 
 gulp.task('styles', function () {
@@ -32,11 +32,11 @@ gulp.task('scripts', function() {
 });
 
 gulp.task('clean:styles', function () {
-    return del([assetsPath + '/min/css/*']);
+    return del([assetsPath + '/build/css/*']);
 });
 
 gulp.task('clean:scripts', function () {
-    return del([assetsPath + '/min/js/*']);
+    return del([assetsPath + '/build/js/*']);
 });
 
 gulp.task('clean', gulp.series(
@@ -52,7 +52,7 @@ gulp.task('watch', function() {
         gulp.series('clean:scripts', 'scripts'));
 });
 
-gulp.task('bs:watch', function() {
+gulp.task('watch:bs', function() {
     bs.init({
         proxy: config.bsProxy
     });
@@ -90,12 +90,12 @@ gulp.task('deploy:scripts', function() {
 
 gulp.task('compress', function() {
     return ms([
-        gulp.src(assetsPath + '/min/js/*.js')
+        gulp.src(assetsPath + '/build/js/*.js')
             .pipe(gzip())
-            .pipe(gulp.dest(assetsPath + '/min/js')),
-        gulp.src(assetsPath + '/min/css/*.css')
+            .pipe(gulp.dest(assetsPath + '/build/js')),
+        gulp.src(assetsPath + '/build/css/*.css')
             .pipe(gzip())
-            .pipe(gulp.dest(assetsPath + '/min/css'))
+            .pipe(gulp.dest(assetsPath + '/build/css'))
     ]);
 });
 
@@ -112,61 +112,61 @@ gulp.task('deploy',
 /* Functions for styles and scripts */
 function styles(conf) {
     return gulp.src(conf.src)
-    .pipe(plumber(function (error) {
-        console.log(error.toString());
-        this.emit('end');
-    }))
-    .pipe(sourcemaps.init())
-    .pipe(sass())
-    .pipe(concat(conf.dest))
-    .pipe(rev())
-    .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest(assetsPath))
-    .pipe(rev.manifest({merge: true}))
-    .pipe(gulp.dest('.'));
+        .pipe(plumber(function (error) {
+            console.log(error.toString());
+            this.emit('end');
+        }))
+        .pipe(sourcemaps.init())
+        .pipe(sass())
+        .pipe(concat(conf.dest))
+        .pipe(rev())
+        .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest(config.publicPath))
+        .pipe(rev.manifest({merge: true}))
+        .pipe(gulp.dest('.'));
 }
 
 function scripts(conf) {
     return gulp.src(conf.src)
-    .pipe(plumber(function (error) {
-        console.log(error.toString());
-        this.emit('end');
-    }))
-    .pipe(sourcemaps.init())
-    .pipe(concat(conf.dest))
-    .pipe(rev())
-    .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest(assetsPath))
-    .pipe(rev.manifest({merge: true}))
-    .pipe(gulp.dest('.'));
+        .pipe(plumber(function (error) {
+            console.log(error.toString());
+            this.emit('end');
+        }))
+        .pipe(sourcemaps.init())
+        .pipe(concat(conf.dest))
+        .pipe(rev())
+        .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest(config.publicPath))
+        .pipe(rev.manifest({merge: true}))
+        .pipe(gulp.dest('.'));
 }
 
 function deployStyles(conf) {
     return gulp.src(conf.src)
-    .pipe(plumber(function (error) {
-        console.log(error.toString());
-        this.emit('end');
-    }))
-    .pipe(sass())
-    .pipe(autoprefixer())
-    .pipe(concat(conf.dest))
-    .pipe(uglifycss())
-    .pipe(rev())
-    .pipe(gulp.dest(assetsPath))
-    .pipe(rev.manifest({merge: true}))
-    .pipe(gulp.dest('.'));
+        .pipe(plumber(function (error) {
+            console.log(error.toString());
+            this.emit('end');
+        }))
+        .pipe(sass())
+        .pipe(autoprefixer())
+        .pipe(concat(conf.dest))
+        .pipe(uglifycss())
+        .pipe(rev())
+        .pipe(gulp.dest(config.publicPath))
+        .pipe(rev.manifest({merge: true}))
+        .pipe(gulp.dest('.'));
 }
 
 function deployScripts(conf) {
     return gulp.src(conf.src)
-    .pipe(plumber(function (error) {
-        console.log(error.toString());
-        this.emit('end');
-    }))
-    .pipe(concat(conf.dest))
-    .pipe(uglify())
-    .pipe(rev())
-    .pipe(gulp.dest(assetsPath))
-    .pipe(rev.manifest({merge: true}))
-    .pipe(gulp.dest('.'));
+        .pipe(plumber(function (error) {
+            console.log(error.toString());
+            this.emit('end');
+        }))
+        .pipe(concat(conf.dest))
+        .pipe(uglify())
+        .pipe(rev())
+        .pipe(gulp.dest(config.publicPath))
+        .pipe(rev.manifest({merge: true}))
+        .pipe(gulp.dest('.'));
 }

@@ -1,15 +1,14 @@
 {
+  "publicPath": "./web",
   "assetsPath": "./web/assets",
   "bsProxy": "192.168.56.128",
   "watchHtml": "./web/*.php",
 
-  "copy": {
-    "fonts": {
-      "src": [
-        "./node_modules/font-awesome/fonts/*"
-      ],
-      "dest": "min/fonts/"
-    }
+  "fonts": {
+    "src": [
+      "./node_modules/font-awesome/fonts/*"
+    ],
+    "dest": "assets/build/fonts/"
   },
 
   "styles": {
@@ -19,7 +18,7 @@
         "./node_modules/bootstrap/dist/css/bootstrap.min.css",
         "./web/assets/sass/default.sass"
       ],
-      "dest": "min/css/main.css"
+      "dest": "assets/build/css/main.css"
     }
   },
 
@@ -30,7 +29,7 @@
         "./node_modules/bootstrap/dist/js/bootstrap.min.js",
         "./web/assets/js/default.js"
       ],
-      "dest": "min/js/main.js"
+      "dest": "assets/build/js/main.js"
     }
   }
 }
