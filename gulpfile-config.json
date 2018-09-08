@@ -8,7 +8,7 @@
     "src": [
       "./node_modules/font-awesome/fonts/*"
     ],
-    "dest": "assets/build/fonts/"
+    "dest": "assets/dist/fonts/"
   },
 
   "styles": {
@@ -18,7 +18,7 @@
         "./node_modules/bootstrap/dist/css/bootstrap.min.css",
         "./web/assets/sass/default.sass"
       ],
-      "dest": "assets/build/css/main.css"
+      "dest": "assets/dist/css/main.css"
     }
   },
 
@@ -29,7 +29,7 @@
         "./node_modules/bootstrap/dist/js/bootstrap.min.js",
         "./web/assets/js/default.js"
       ],
-      "dest": "assets/build/js/main.js"
+      "dest": "assets/dist/js/main.js"
     }
   }
 }

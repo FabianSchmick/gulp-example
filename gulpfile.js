@@ -14,7 +14,7 @@ var gulp  = require('gulp'),
     ms = require('merge-stream');
 
 /* Config */
-var config = require('./config.json'),
+var config = require('./gulpfile-config.json'),
     assetsPath = config.assetsPath;
 
 /* Tasks */

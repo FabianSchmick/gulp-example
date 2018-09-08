@@ -2,7 +2,7 @@
 .vagrant
 /ansible/playbook.retry
 /app/cache
-/web/assets/build/
+/web/assets/dist/
 /node_modules/
 rev-manifest.json
 npm-debug.log
