@@ -32,11 +32,11 @@ gulp.task('scripts', function() {
 });
 
 gulp.task('clean:styles', function () {
-    return del([assetsPath + '/build/css/*']);
+    return del([assetsPath + '/dist/css/*']);
 });
 
 gulp.task('clean:scripts', function () {
-    return del([assetsPath + '/build/js/*']);
+    return del([assetsPath + '/dist/js/*']);
 });
 
 gulp.task('clean', gulp.series(
@@ -90,12 +90,12 @@ gulp.task('deploy:scripts', function() {
 
 gulp.task('compress', function() {
     return ms([
-        gulp.src(assetsPath + '/build/js/*.js')
+        gulp.src(assetsPath + '/dist/js/*.js')
             .pipe(gzip())
-            .pipe(gulp.dest(assetsPath + '/build/js')),
-        gulp.src(assetsPath + '/build/css/*.css')
+            .pipe(gulp.dest(assetsPath + '/dist/js')),
+        gulp.src(assetsPath + '/dist/css/*.css')
             .pipe(gzip())
-            .pipe(gulp.dest(assetsPath + '/build/css'))
+            .pipe(gulp.dest(assetsPath + '/dist/css'))
     ]);
 });
 
