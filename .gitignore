@@ -1,7 +1,4 @@
 .idea
-.vagrant
-/ansible/playbook.retry
-/app/cache
 /web/assets/dist/
 /node_modules/
 rev-manifest.json
