@@ -9,6 +9,7 @@ var gulp  = require('gulp'),
     gzip = require('gulp-gzip'),
     plumber = require('gulp-plumber'),
     rev = require('gulp-rev'),
+    imagemin = require('gulp-imagemin'),
     del = require('del'),
     ms = require('merge-stream');
 
@@ -19,6 +20,12 @@ var config = require('./gulpfile-config.json');
 gulp.task('fonts', function () {
     return gulp.src(config.fonts.src)
         .pipe(gulp.symlink(config.publicPath + '/' + config.fonts.dest));
+});
+
+gulp.task('images', function () {
+    return gulp.src(config.images.src, {since: gulp.lastRun('images')})
+        .pipe(imagemin({optimizationLevel: 5}))
+        .pipe(gulp.dest(config.publicPath + '/' + config.images.dest));
 });
 
 gulp.task('styles', function () {
@@ -37,9 +44,14 @@ gulp.task('clean:scripts', function () {
     return del([config.distPath + '/js/*']);
 });
 
+gulp.task('clean:images', function () {
+    return del([config.distPath + '/img/*']);
+});
+
 gulp.task('clean', gulp.parallel(
     'clean:styles',
-    'clean:scripts'
+    'clean:scripts',
+    'clean:images'
 ));
 
 gulp.task('watch', function() {
@@ -48,6 +60,9 @@ gulp.task('watch', function() {
 
     gulp.watch(config.assetsPath + '/js/**',
         gulp.series('clean:scripts', 'scripts'));
+
+    gulp.watch(config.assetsPath + '/img/**',
+        gulp.series('images'));
 });
 
 gulp.task('watch:bs', function() {
@@ -63,6 +78,10 @@ gulp.task('watch:bs', function() {
         gulp.series('clean:scripts', 'scripts'))
         .on('change', bs.reload);
 
+    gulp.watch(config.assetsPath + '/img/**',
+        gulp.series('images'))
+        .on('change', bs.reload);
+
     if (config.watchHtml) {
         gulp.watch(config.watchHtml).on('change', bs.reload);
     }
@@ -71,7 +90,7 @@ gulp.task('watch:bs', function() {
 gulp.task('default',
     gulp.series(
         'clean',
-        gulp.parallel('fonts', 'scripts', 'styles')
+        gulp.parallel('fonts', 'images', 'scripts', 'styles')
     )
 );
 
@@ -98,7 +117,7 @@ gulp.task('compress', function() {
 gulp.task('deploy',
     gulp.series(
         'clean',
-        gulp.parallel('fonts', 'deploy:scripts', 'deploy:styles'),
+        gulp.parallel('fonts', 'images', 'deploy:scripts', 'deploy:styles'),
         'compress'
     )
 );

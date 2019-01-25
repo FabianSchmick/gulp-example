@@ -12,6 +12,13 @@
     "dest": "assets/dist/fonts/"
   },
 
+  "images": {
+    "src": [
+      "./assets/img/**/*.{jpg,JPG,jpeg,JPEG,png,PNG}"
+    ],
+    "dest": "assets/dist/img/"
+  },
+
   "styles": {
     "frontend": {
       "src": [
