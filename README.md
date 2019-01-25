@@ -10,7 +10,7 @@ The example provides you following functionality:
 - Uglify css and js with [gulp-uglifycss](https://www.npmjs.com/package/gulp-uglifycss) and [gulp-uglify](https://www.npmjs.com/package/gulp-uglify)
 - Gzip with [gulp-gzip](https://www.npmjs.com/package/gulp-gzip)
 - Static asset revisioning by appending content hash to filenames with [gulp-rev](https://github.com/sindresorhus/gulp-rev)
-- Sourcemaps with [gulp-sourcemaps](https://www.npmjs.com/package/gulp-sourcemaps)
+- Sourcemaps with gulp built-in support
 - Browser refreshing with [browser-sync](https://www.npmjs.com/package/browser-sync)
 
 
@@ -20,8 +20,6 @@ Clone the project
 ```
 git clone https://github.com/FabianSchmick/gulp-example.git
 ```
-
-After you cloned you need to [setup vagrant](https://github.com/FabianSchmick/vagrant_skeleton/blob/master/README.md)
 
 ## Usage
 

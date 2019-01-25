@@ -7,7 +7,6 @@ var gulp  = require('gulp'),
     uglify = require('gulp-uglify'),
     uglifycss = require('gulp-uglifycss'),
     gzip = require('gulp-gzip'),
-    sourcemaps = require('gulp-sourcemaps'),
     plumber = require('gulp-plumber'),
     rev = require('gulp-rev'),
     del = require('del'),
@@ -19,7 +18,7 @@ var config = require('./gulpfile-config.json');
 /* Tasks */
 gulp.task('fonts', function () {
     return gulp.src(config.fonts.src)
-        .pipe(gulp.dest(config.publicPath + '/' + config.fonts.dest));
+        .pipe(gulp.symlink(config.publicPath + '/' + config.fonts.dest));
 });
 
 gulp.task('styles', function () {
@@ -38,7 +37,7 @@ gulp.task('clean:scripts', function () {
     return del([config.distPath + '/js/*']);
 });
 
-gulp.task('clean', gulp.series(
+gulp.task('clean', gulp.parallel(
     'clean:styles',
     'clean:scripts'
 ));
@@ -72,9 +71,7 @@ gulp.task('watch:bs', function() {
 gulp.task('default',
     gulp.series(
         'clean',
-        'fonts',
-        'scripts',
-        'styles'
+        gulp.parallel('fonts', 'scripts', 'styles')
     )
 );
 
@@ -101,41 +98,35 @@ gulp.task('compress', function() {
 gulp.task('deploy',
     gulp.series(
         'clean',
-        'fonts',
-        'deploy:scripts',
-        'deploy:styles',
+        gulp.parallel('fonts', 'deploy:scripts', 'deploy:styles'),
         'compress'
     )
 );
 
 /* Functions for styles and scripts */
 function styles(conf) {
-    return gulp.src(conf.src)
+    return gulp.src(conf.src, { sourcemaps: true })
         .pipe(plumber(function (error) {
             console.log(error.toString());
             this.emit('end');
         }))
-        .pipe(sourcemaps.init())
         .pipe(sass())
         .pipe(concat(conf.dest))
         .pipe(rev())
-        .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest(config.publicPath))
+        .pipe(gulp.dest(config.publicPath, { sourcemaps: '.' }))
         .pipe(rev.manifest({merge: true}))
         .pipe(gulp.dest('.'));
 }
 
 function scripts(conf) {
-    return gulp.src(conf.src)
+    return gulp.src(conf.src, { sourcemaps: true })
         .pipe(plumber(function (error) {
             console.log(error.toString());
             this.emit('end');
         }))
-        .pipe(sourcemaps.init())
         .pipe(concat(conf.dest))
         .pipe(rev())
-        .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest(config.publicPath))
+        .pipe(gulp.dest(config.publicPath, { sourcemaps: '.' }))
         .pipe(rev.manifest({merge: true}))
         .pipe(gulp.dest('.'));
 }

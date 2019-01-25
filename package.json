@@ -22,7 +22,6 @@
     "gulp-plumber": "^1.2.0",
     "gulp-rev": "^8.1.1",
     "gulp-sass": "^3.1.0",
-    "gulp-sourcemaps": "^2.6.4",
     "gulp-uglify": "^3.0.0",
     "gulp-uglifycss": "^1.0.9",
     "merge-stream": "^1.0.1",
