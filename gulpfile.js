@@ -14,8 +14,7 @@ var gulp  = require('gulp'),
     ms = require('merge-stream');
 
 /* Config */
-var config = require('./gulpfile-config.json'),
-    assetsPath = config.assetsPath;
+var config = require('./gulpfile-config.json');
 
 /* Tasks */
 gulp.task('fonts', function () {
@@ -32,11 +31,11 @@ gulp.task('scripts', function() {
 });
 
 gulp.task('clean:styles', function () {
-    return del([assetsPath + '/dist/css/*']);
+    return del([config.distPath + '/css/*']);
 });
 
 gulp.task('clean:scripts', function () {
-    return del([assetsPath + '/dist/js/*']);
+    return del([config.distPath + '/js/*']);
 });
 
 gulp.task('clean', gulp.series(
@@ -45,10 +44,10 @@ gulp.task('clean', gulp.series(
 ));
 
 gulp.task('watch', function() {
-    gulp.watch(assetsPath + '/sass/**',
+    gulp.watch(config.assetsPath + '/sass/**',
         gulp.series('clean:styles', 'styles'));
 
-    gulp.watch(assetsPath + '/js/**',
+    gulp.watch(config.assetsPath + '/js/**',
         gulp.series('clean:scripts', 'scripts'));
 });
 
@@ -57,11 +56,11 @@ gulp.task('watch:bs', function() {
         proxy: config.bsProxy
     });
 
-    gulp.watch(assetsPath + '/sass/**',
+    gulp.watch(config.assetsPath + '/sass/**',
         gulp.series('clean:styles', 'styles'))
         .on('change', bs.reload);
 
-    gulp.watch(assetsPath + '/js/**',
+    gulp.watch(config.assetsPath + '/js/**',
         gulp.series('clean:scripts', 'scripts'))
         .on('change', bs.reload);
 
@@ -90,12 +89,12 @@ gulp.task('deploy:scripts', function() {
 
 gulp.task('compress', function() {
     return ms([
-        gulp.src(assetsPath + '/dist/js/*.js')
+        gulp.src(config.distPath + '/js/*.js')
             .pipe(gzip())
-            .pipe(gulp.dest(assetsPath + '/dist/js')),
-        gulp.src(assetsPath + '/dist/css/*.css')
+            .pipe(gulp.dest(config.distPath + '/js')),
+        gulp.src(config.distPath + '/css/*.css')
             .pipe(gzip())
-            .pipe(gulp.dest(assetsPath + '/dist/css'))
+            .pipe(gulp.dest(config.distPath + '/css'))
     ]);
 });
 

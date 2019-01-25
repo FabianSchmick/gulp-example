@@ -1,6 +1,7 @@
 {
+  "assetsPath": "./assets",
+  "distPath": "./web/assets/dist",
   "publicPath": "./web",
-  "assetsPath": "./web/assets",
   "bsProxy": "192.168.56.128",
   "watchHtml": "./web/*.php",
 
@@ -16,7 +17,7 @@
       "src": [
         "./node_modules/font-awesome/css/font-awesome.min.css",
         "./node_modules/bootstrap/dist/css/bootstrap.min.css",
-        "./web/assets/sass/default.sass"
+        "./assets/sass/default.sass"
       ],
       "dest": "assets/dist/css/main.css"
     }
@@ -27,7 +28,7 @@
       "src": [
         "./node_modules/jquery/dist/jquery.min.js",
         "./node_modules/bootstrap/dist/js/bootstrap.min.js",
-        "./web/assets/js/default.js"
+        "./assets/js/default.js"
       ],
       "dest": "assets/dist/js/main.js"
     }
