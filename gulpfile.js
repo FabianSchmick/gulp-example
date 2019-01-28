@@ -24,8 +24,7 @@ gulp.task('fonts', function () {
 
 gulp.task('images', function () {
     return gulp.src(config.images.src, {since: gulp.lastRun('images')})
-        .pipe(imagemin({optimizationLevel: 5}))
-        .pipe(gulp.dest(config.publicPath + '/' + config.images.dest));
+        .pipe(gulp.symlink(config.publicPath + '/' + config.images.dest));
 });
 
 gulp.task('styles', function () {
@@ -110,7 +109,10 @@ gulp.task('compress', function() {
             .pipe(gulp.dest(config.distPath + '/js')),
         gulp.src(config.distPath + '/css/*.css')
             .pipe(gzip())
-            .pipe(gulp.dest(config.distPath + '/css'))
+            .pipe(gulp.dest(config.distPath + '/css')),
+        gulp.src(config.images.src + '.{jpg,JPG,jpeg,JPEG,png,PNG}')
+            .pipe(imagemin({optimizationLevel: 5}))
+            .pipe(gulp.dest(config.publicPath + '/' + config.images.dest))
     ]);
 });
 

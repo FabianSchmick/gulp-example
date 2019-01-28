@@ -14,7 +14,7 @@
 
   "images": {
     "src": [
-      "./assets/img/**/*.{jpg,JPG,jpeg,JPEG,png,PNG}"
+      "./assets/img/**/*"
     ],
     "dest": "assets/dist/img/"
   },
