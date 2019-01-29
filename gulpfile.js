@@ -23,7 +23,7 @@ gulp.task('fonts', function () {
 });
 
 gulp.task('images', function () {
-    return gulp.src(config.images.src, {since: gulp.lastRun('images')})
+    return gulp.src(config.images.symlink)
         .pipe(gulp.symlink(config.publicPath + '/' + config.images.dest));
 });
 
@@ -61,7 +61,7 @@ gulp.task('watch', function() {
         gulp.series('clean:scripts', 'scripts'));
 
     gulp.watch(config.assetsPath + '/img/**',
-        gulp.series('images'));
+        gulp.series('clean:images', 'images'));
 });
 
 gulp.task('watch:bs', function() {
@@ -78,7 +78,7 @@ gulp.task('watch:bs', function() {
         .on('change', bs.reload);
 
     gulp.watch(config.assetsPath + '/img/**',
-        gulp.series('images'))
+        gulp.series('clean:images', 'images'))
         .on('change', bs.reload);
 
     if (config.watchHtml) {
@@ -102,6 +102,7 @@ gulp.task('deploy:scripts', function() {
     return deployScripts(config.scripts.frontend)
 });
 
+/* TODO: Fix imagemin doesn't overwrite symlinks, instead overwrites original files */
 gulp.task('compress', function() {
     return ms([
         gulp.src(config.distPath + '/js/*.js')
@@ -110,8 +111,18 @@ gulp.task('compress', function() {
         gulp.src(config.distPath + '/css/*.css')
             .pipe(gzip())
             .pipe(gulp.dest(config.distPath + '/css')),
-        gulp.src(config.images.src + '.{jpg,JPG,jpeg,JPEG,png,PNG}')
-            .pipe(imagemin({optimizationLevel: 5}))
+        gulp.src(config.images.minify)
+            .pipe(imagemin([
+                imagemin.gifsicle({interlaced: true}),
+                imagemin.jpegtran({progressive: true}),
+                imagemin.optipng({optimizationLevel: 5}),
+                imagemin.svgo({
+                    plugins: [
+                        {removeViewBox: true},
+                        {cleanupIDs: false}
+                    ]
+                })
+            ]))
             .pipe(gulp.dest(config.publicPath + '/' + config.images.dest))
     ]);
 });
@@ -126,7 +137,7 @@ gulp.task('deploy',
 
 /* Functions for styles and scripts */
 function styles(conf) {
-    return gulp.src(conf.src, { sourcemaps: true })
+    return gulp.src(conf.src, {sourcemaps: true})
         .pipe(plumber(function (error) {
             console.log(error.toString());
             this.emit('end');
@@ -134,20 +145,20 @@ function styles(conf) {
         .pipe(sass())
         .pipe(concat(conf.dest))
         .pipe(rev())
-        .pipe(gulp.dest(config.publicPath, { sourcemaps: '.' }))
+        .pipe(gulp.dest(config.publicPath, {sourcemaps: '.'}))
         .pipe(rev.manifest({merge: true}))
         .pipe(gulp.dest('.'));
 }
 
 function scripts(conf) {
-    return gulp.src(conf.src, { sourcemaps: true })
+    return gulp.src(conf.src, {sourcemaps: true})
         .pipe(plumber(function (error) {
             console.log(error.toString());
             this.emit('end');
         }))
         .pipe(concat(conf.dest))
         .pipe(rev())
-        .pipe(gulp.dest(config.publicPath, { sourcemaps: '.' }))
+        .pipe(gulp.dest(config.publicPath, {sourcemaps: '.'}))
         .pipe(rev.manifest({merge: true}))
         .pipe(gulp.dest('.'));
 }

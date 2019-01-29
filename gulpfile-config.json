@@ -13,8 +13,11 @@
   },
 
   "images": {
-    "src": [
-      "./assets/img/**/*"
+    "symlink": [
+      "./assets/img/**/*.*"
+    ],
+    "minify": [
+      "./assets/img/**/*.{jpg,JPG,jpeg,JPEG,png,PNG,svg,SVG,gif,GIF}"
     ],
     "dest": "assets/dist/img/"
   },
